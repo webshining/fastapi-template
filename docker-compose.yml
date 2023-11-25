@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    restart: always
+    depends_on:
+      - db
+    environment:
+      PORT: ${PORT:-4000}
+      HOST: ${HOST:-0.0.0.0}
+      DB_NAME: ${DB_NAME:-database}
+      DB_USER: ${DB_USER:-webshining}
+      DB_PASS: ${DB_PASS:-admin}
+      DB_HOST: ${DB_HOST:-db}
+      DB_PORT: ${DB_PORT:-5432}
+    ports:
+      - "${PORT:-4000}:${PORT:-4000}"
+    entrypoint: 
+      - ./bin/entrypoint.sh
+  db:
+    image: postgres:alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: database
+      POSTGRES_USER: webshining
+      POSTGRES_PASSWORD: admin
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+volumes:
+  postgres_data:
